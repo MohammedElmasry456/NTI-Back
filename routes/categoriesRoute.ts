@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { createCategory, getCategories, getCategory, updateCategory,deleteCategory } from "../controllers/categories";
-import { createCategoryValidator, deleteCategoryValidator, getCategoryValidator, updateCategoryValidator } from "../utils/validation/categoriesValidator";
+import { createCategoryValidator, getCategoryValidator, updateCategoryValidator } from "../utils/validation/categoriesValidator";
 
 const CategoriesRouter:Router = Router();
 CategoriesRouter.route("/")
@@ -11,5 +11,5 @@ CategoriesRouter.route("/")
 CategoriesRouter.route("/:id")
     .get(getCategoryValidator,getCategory)
     .put(updateCategoryValidator,updateCategory)
-    .delete(deleteCategoryValidator,deleteCategory)
+    .delete(deleteCategory)
 export default CategoriesRouter
