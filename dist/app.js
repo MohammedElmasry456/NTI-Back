@@ -5,14 +5,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const dotenv_1 = __importDefault(require("dotenv"));
-const mongoose_1 = __importDefault(require("mongoose"));
+const mongoose_1 = require("./db/mongoose");
+const routes_1 = __importDefault(require("./routes"));
 const app = (0, express_1.default)();
 dotenv_1.default.config();
-mongoose_1.default.connect(process.env.DB).then(() => {
-    console.log(`connected to port ${process.env.DB}`);
-}).catch((e) => console.log(e));
+(0, mongoose_1.dataBase)();
 app.use(express_1.default.json());
-app.get("/", (req, res) => {
-    res.json({ message: "hello world" });
+(0, routes_1.default)(app);
+app.listen(process.env.PORT, () => {
+    console.log("All Done");
 });
-app.listen(process.env.PORT);

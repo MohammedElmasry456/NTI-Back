@@ -1,7 +1,8 @@
 import { RequestHandler } from "express";
 import { check } from "express-validator";
 import val_Middleware from "../../middlewares/validator";
-// import subCategoriesModel from "../../models/subCategoriesModel";
+import subCategoriesModel from "../../models/subCategoriesModel";
+import { subCategories } from "../../interfaces/subCategories";
 
 
 export const createCategoryValidator: RequestHandler[] = [
@@ -23,11 +24,17 @@ export const createCategoryValidator: RequestHandler[] = [
     val_Middleware
   ]
   
-  // export const deleteCategoryValidator: RequestHandler[] = [
-  //   check('id').isMongoId().withMessage('Invalid Mongo Id')
-  //     .custom(async (val) => {
-  //       const subcategories = await subCategoriesModel.find({ category: val });
-      
-  //     }),
-  //   val_Middleware
-  // ]
+  export const deleteCategoryValidator: RequestHandler[] = [
+    check('id').isMongoId().withMessage('Invalid Mongo Id')
+      .custom(async (val) => {
+        const subcategories = await subCategoriesModel.find({ category: val });
+        if (subcategories.length > 0) {
+          const bulkOption = subcategories.map((subcategory: subCategories) => ({
+            deleteOne: { filter: { _id: subcategory._id } }
+          }))
+          await subCategoriesModel.bulkWrite(bulkOption)
+        }
+        return true;
+      }),
+      val_Middleware
+  ]
