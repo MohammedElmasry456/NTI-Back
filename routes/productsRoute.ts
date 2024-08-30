@@ -1,16 +1,16 @@
 import { Router } from "express";
-import { createProduct, deleteProduct, getProduct, getProducts, updateProduct, upload } from "../controllers/products";
+import { createProduct, deleteProduct, getProduct, getProducts, resizeImages, updateProduct, uploadProductImages } from "../controllers/products";
 import { createProductValidator, deleteProductValidator, getProductValidator, updateProductValidator } from "../utils/validation/productsValidator";
+import { allowedTo, checkActive, protectRoutes } from "../controllers/auth";
+const productsRoute: Router = Router();
 
+productsRoute.route('/')
+  .get(getProducts)
+  .post(protectRoutes, checkActive, allowedTo('manager', 'admin'), uploadProductImages, resizeImages, createProductValidator, createProduct);
 
-const productsRouter:Router = Router();
-productsRouter.route("/")
-    .post(upload.single("cover"),createProductValidator,createProduct)
-    .get(getProducts)
-   
+productsRoute.route('/:id')
+  .get(getProductValidator, getProduct)
+  .put(protectRoutes, checkActive, allowedTo('manager', 'admin'), updateProductValidator, updateProduct)
+  .delete(protectRoutes, checkActive, allowedTo('manager', 'admin'), deleteProductValidator, deleteProduct);
 
-    productsRouter.route("/:id")
-    .get(getProductValidator,getProduct)
-    .put(updateProductValidator,updateProduct)
-    .delete(deleteProductValidator,deleteProduct)
-export default productsRouter
+export default productsRoute;
