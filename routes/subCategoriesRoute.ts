@@ -1,12 +1,12 @@
 import { Router } from "express";
-import { createSubCategory, deleteSubCategory, filterData, getSubCategories, getSubCategory, updateSubCategory } from "../controllers/subCategories";
+import { createSubCategory, deleteSubCategory, filterData, getSubCategories, getSubCategory, setCategoryId, updateSubCategory } from "../controllers/subCategories";
 import { createSubcategoryValidator, deleteSubcategoryValidator, getSubcategoryValidator, updateSubcategoryValidator } from "../utils/validation/subCategoriesvalidator";
 import { allowedTo, checkActive, protectRoutes } from "../controllers/auth";
 
 
 const subCategoriesRouter:Router = Router({ mergeParams: true });
 subCategoriesRouter.route("/")
-    .post(protectRoutes,checkActive,allowedTo("manager","admin"),createSubcategoryValidator,createSubCategory)
+    .post(protectRoutes,checkActive,allowedTo("manager","admin"),setCategoryId,createSubcategoryValidator,createSubCategory)
     .get(filterData,getSubCategories)
    
 
