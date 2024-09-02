@@ -11,6 +11,7 @@ import reviewsRoute from "./reviewsRoute";
 import wishlistRoute from "./wishlistRoute";
 import couponsRoute from "./couponsRoute";
 import cartsRoute from "./cartsRoute";
+import ordersRoute from "./ordersRoute";
 
 const Routes = (app:Application):void =>{
     app.use('/api/v1/categories',CategoriesRouter);
@@ -22,6 +23,7 @@ const Routes = (app:Application):void =>{
     app.use('/api/v1/wishlist', wishlistRoute);
     app.use('/api/v1/coupons', couponsRoute);
     app.use('/api/v1/carts', cartsRoute);
+    app.use('/api/v1/orders', ordersRoute);
     app.all("*",(req:Request, res:Response, next:NextFunction)=>{
       next(new ApiErrors(`The Route ${req.originalUrl} Not Found`,400))
     })

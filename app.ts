@@ -8,6 +8,8 @@ import cors from 'cors';
 import { dataBase } from "./db/mongoose";
 import Routes from "./routes";
 import { Server } from "http";
+import { I18n } from 'i18n';
+import path from "path";
 
 
 const app:express.Application = express(); 
@@ -15,6 +17,13 @@ const app:express.Application = express();
 dotenv.config();
 
 dataBase();
+const i18n = new I18n({
+    locales: ['en', 'ar'],
+    directory: path.join(__dirname, 'locales'),
+    defaultLocale: 'en',
+    queryParameter: 'lang'
+  })
+  app.use(i18n.init)
 
 app.use(express.json({ limit: '10kb' }))
 app.use(cors({

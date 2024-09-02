@@ -20,7 +20,7 @@ export const createCategoryValidator: RequestHandler[] = [
   ]
   
   export const getCategoryValidator: RequestHandler[] = [
-    check('id').isMongoId().withMessage('Invalid Mongo Id'),
+    check('id').isMongoId().withMessage((val, { req }) => req.__('check_id')),
     val_Middleware
   ]
   
