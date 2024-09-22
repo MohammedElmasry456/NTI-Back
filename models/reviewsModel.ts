@@ -4,8 +4,8 @@ import productsModel from "./productsModel";
 
 const reviewsSchema: Schema = new Schema<Reviews>(
   {
-    comment: { type: String, required: true },
-    rating: { type: Number, required: true, min: 1, max: 5 },
+    comment: { type: String },
+    rating: { type: Number, min: 1, max: 5 },
     user: { type: Schema.Types.ObjectId, ref: "users", required: true },
     product: { type: Schema.Types.ObjectId, ref: "products", required: true },
   },
@@ -42,12 +42,19 @@ reviewsSchema.post<Reviews>("save", async function () {
 reviewsSchema.post<Reviews>('findOneAndDelete', async function (doc) {
   const reviewDoc = doc as unknown as Reviews;
   if (reviewDoc.product) {
-    await (reviewDoc.constructor as any).calculateRatingAndCount(reviewDoc.product);
+    await (reviewDoc.constructor as any).calcRatingAndQuantity(reviewDoc.product);
   }
 });
+
 reviewsSchema.pre<Reviews>(/^find/, function (next) {
-  this.populate({ path: "user", select: "name image" });
-  next();
-});
+  this.populate({ path: 'user', select: 'name image' })
+  next()
+})
+
+reviewsSchema.pre<Reviews>('find', function (next) {
+  this.populate({ path: 'product', select: 'name cover' })
+  next()
+})
+
 
 export default model<Reviews>("reviews", reviewsSchema);

@@ -12,7 +12,7 @@ import sendMail from "../utils/sendMail";
 export const signup = asyncHandler(
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const user: Users = await usersModel.create(req.body);
-    const token = createToken(user._id);
+    const token = createToken(user._id, user.role);
     res.status(201).json({ token, data: user });
   }
 );
@@ -23,7 +23,7 @@ export const login = asyncHandler(
     if (!user || !(await bcrypt.compare(req.body.password, user.password))) {
       return next(new ApiErrors("Invalid email or password", 401));
     }
-    const token = createToken(user._id);
+    const token = createToken(user._id, user.role);
     res.status(200).json({ token, message: "logged in successfully" });
   }
 );
@@ -48,8 +48,7 @@ export const protectRoutes = asyncHandler(
     }
 
     if (currentUser.passwordChangedAt instanceof Date) {
-      const changedPasswordTime: number =
-        currentUser.passwordChangedAt.getTime() / 1000;
+      const changedPasswordTime: number = parseInt((currentUser.passwordChangedAt.getTime() / 1000).toString());
       if (changedPasswordTime > decodedToken.iat) {
         return next(new ApiErrors("please login again", 401));
       }
@@ -120,7 +119,7 @@ export const resetCode = asyncHandler(async (req: Request, res: Response, next: 
 
 export const allowedTo = (...roles: string[]) =>
   asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
-    if (!roles.includes(req.user?.role ?? "")) {
+    if (!(roles.includes(req.user?.role!))) {
       return next(new ApiErrors("you can't access this", 403));
     }
     next();

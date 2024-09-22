@@ -51,6 +51,6 @@ export const deleteOne = <modelType>(model: mongoose.Model<any>) => asyncHandler
   if (!document) {
     return next(new ApiErrors(`${req.__('not_found')}`, 404))
   }
-  document.remove();
+ 
   res.status(204).json({ data: document });
 })

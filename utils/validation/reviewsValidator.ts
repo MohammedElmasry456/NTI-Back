@@ -28,6 +28,7 @@ export const updateReviewValidator: RequestHandler[] = [
       if (review.user._id!.toString() !== req.user._id.toString()) {
         throw new Error('you are not allowed to perform this action')
       }
+      console.log(req.body)
       return true;
     }),
   validatorMiddleware
